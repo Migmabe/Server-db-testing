@@ -3,12 +3,8 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy import String
 import datetime
-import logging
 
 app = Flask(__name__)
-# Create a logger for debugging purposes
-logger = logging.getLogger(__name__)
-logging.basicConfig(filename='sql_query.log', level=logging.INFO)
 
 
 # CREATE DATABASE
@@ -18,13 +14,10 @@ class Base(DeclarativeBase):
 
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///users.db"
 
-logger.info("Create extension")
 # Create the extension
 db = SQLAlchemy(model_class=Base)
 # Initialise the app with the extension
 db.init_app(app)
-
-logger.info("Create table")
 
 
 # -----------------CREATE TABLES---------------------------#
@@ -43,7 +36,7 @@ class Users(db.Model):
 class SystemLogon(db.Model):
     """Logs system logins into the database"""
     id: Mapped[int] = mapped_column(primary_key=True)
-    username: Mapped[str] = mapped_column(String(250), nullable=False)
+    username: Mapped[str] = mapped_column(String(250), nullable=False, unique=True)
     time: Mapped[datetime.datetime] = mapped_column(nullable=False)
 
 
